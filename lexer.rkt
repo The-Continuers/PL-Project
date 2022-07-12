@@ -21,9 +21,10 @@
    ((:or (:+ (char-range #\0 #\9))
          (:: (:+ (char-range #\0 #\9)) #\. (:+ (char-range #\0 #\9))))
     (token-NUMBER (string->number lexeme)))
-   ((:or "sad" "ashk"
-         ;todo
-         )
+   ((:: (:or "_" (char-range "a" "z") (char-range "A" "Z"))
+        (:* (:or "_" (char-range "a" "z") (char-range "A" "Z") (char-range #\0 #\9)))
+        ;todo [_a-zA-Z][_a-zA-Z0-9]*
+        )
     (token-ID lexeme))
    ;KWS
    ("def" (token-DEF))
@@ -55,7 +56,7 @@
 
 ;test
 (define lex-this (lambda (lexer input) (lambda () (lexer input))))
-(define my-lexer (lex-this python-lexer (open-input-string "1+2+ 3 +   4")))
+(define my-lexer (lex-this python-lexer (open-input-string "_qAre9j")))
 (my-lexer)
 (my-lexer)
 (my-lexer)
