@@ -1,0 +1,16 @@
+Tokens:
+LITERALS: [ID, NUMBER]
+
+
+
+EmptyTokens:
+EOF
+KWS: ['def', 'global', 'pass', 'break', 'continue', 'return', 'None']
+COND_KWS: ['if', 'else']
+LOOP_KWS: ['for', 'in']
+BOOL_KWS: ['True', 'False']
+OPS: ['=' '(' ')' '()' ':' '():' ',' ';']
+BOOL_OPS: ['or', 'and', 'not']
+COND_OPS: ['==', '<', '>']
+ARITH_OPS: ['+', '-', '*', '/', '**']
+INDEX_OPS: ['[', ']', '[]']
