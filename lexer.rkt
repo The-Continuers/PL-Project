@@ -23,7 +23,7 @@
     (token-NUMBER (string->number lexeme)))
    ((:: (:or "_" (char-range "a" "z") (char-range "A" "Z"))
         (:* (:or "_" (char-range "a" "z") (char-range "A" "Z") (char-range #\0 #\9)))
-        ;todo [_a-zA-Z][_a-zA-Z0-9]*
+        ;[_a-zA-Z][_a-zA-Z0-9]*
         )
     (token-ID lexeme))
    ;KWS
@@ -49,7 +49,7 @@
    ("*" (token-MULTI))
    ("/" (token-DIV))
    ("**" (token-POW))
-   ;todo rest
+   ;todo rest "ashk" || "sad"
    (whitespace (python-lexer input-port))
    ((eof) (token-EOF))))
 
