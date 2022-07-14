@@ -14,13 +14,27 @@
   (for_stmt (iter symbol?) (list_exp expression?) (sts list?))
   )
 
-(define-datatype func_params func_params?
-  ()
+(define-datatype func_param func_param?
+  (with_default (var symbol?) (expr expression?))
   )
 
 (define-datatype expression expression?
-  ()
+  (binary_op (op procedure?) (left expression?) (right expression?))
+  (unary_op (op procedure?) (operand expression?))
+  (function_call (func expression?) (params list?))
+  (list_ref (ref expression?) (index expression?))
+  (atomic_exp (expr exp_val?))
+  (ref (var symbol?))
   )
+(define-datatype exp_val exp_val?
+  (list_val (exprs list?))
+  (bool_val (val boolean?))
+  (null_val)
+  (num-val (val number?))
+  
+  )
+
+
 
 ;todo init_structure "Team"
 
