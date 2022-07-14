@@ -1,7 +1,8 @@
 #lang racket
 
 (require "lexer.rkt")
-(require parser-tools/yacc)
+(require parser-tools/lex
+         parser-tools/yacc)
 
 (require "datatypes.rkt")
 (#%require "datatypes.rkt")
@@ -28,15 +29,27 @@
     (Simple_stmt ((Assignment) $1)
                  ((Global_stmt) $1)
                  ((Return_stmt) $1)
-                 ((PASS) #||#)
-                 ((BREAK) #||#)
-                 ((CONTINUE) #||#))
+                 ((PASS) (pass))
+                 ((BREAK) (break))
+                 ((CONTINUE) (continue)))
     (Compound_stmt ((Function_def) $1)
                    ((If_stmt) $1)
                    ((For_stmt) $1)
                    )
-    (Assignment (ID ASSIGN Expression) #||#)
-    )))
+    (Assignment ((ID ASSIGN Expression) (assign (token-value $1) $2)))
+    (Return_stmt ((RETURN) (return_void))
+                 ((RETURN Expression) (return $2))
+                 )
+    (Global_stmt (GLOBAL ID) (global (token-value $2)))
+    (Function_def ((DEF ID LPAR Params RPAR COLON Statements) (func (token-value $2) $4 $7))
+                  ((DEF ID PAR_COLON Statements) (func (token-value $2) (list) $4))
+                  )
+    (Params ((Param_with_default) (list $1))
+            ((Params COMMA Param_with_default) (append $1 (list $3)))
+            )
+    (Param_with_default ((ID ASSIGN Expression) ()))
+    )
+   ))
 
 ;test
 (define lex-this2 (lambda (lexer input) (lambda () (lexer input))))

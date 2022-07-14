@@ -31,10 +31,7 @@
   (bool_val (val boolean?))
   (null_val)
   (num-val (val number?))
-  
   )
-
-
 
 ;todo init_structure "Team"
 
