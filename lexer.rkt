@@ -18,14 +18,18 @@
 (define python-lexer
   (lexer
    ;LITERALS
-   ((:or (:+ (char-range #\0 #\9))
+   (
+     (:or (:+ (char-range #\0 #\9))
          (:: (:+ (char-range #\0 #\9)) #\. (:+ (char-range #\0 #\9))))
-    (token-NUMBER (string->number lexeme)))
-   ((:: (:or "_" (char-range "a" "z") (char-range "A" "Z"))
+    (token-NUMBER (string->number lexeme))
+    )
+   (
+     (:: (:or "_" (char-range "a" "z") (char-range "A" "Z"))
         (:* (:or "_" (char-range "a" "z") (char-range "A" "Z") (char-range #\0 #\9)))
         ;[_a-zA-Z][_a-zA-Z0-9]*
         )
-    (token-ID lexeme))
+    (token-ID lexeme)
+    )
    ;KWS
    ("def" (token-DEF))
    ("global" (token-GLOBAL))

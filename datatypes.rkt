@@ -23,15 +23,14 @@
   (unary_op (op procedure?) (operand expression?))
   (function_call (func expression?) (params list?))
   (list_ref (ref expression?) (index expression?))
-  (atomic_exp (expr exp_val?))
   (ref (var symbol?))
+
+  (atomic_bool_exp (bool boolean?))
+  (atomic_num_exp (num number?))
+  (atomic_null_exp)
+  (atomic_list_exp (l list?))
   )
-(define-datatype exp_val exp_val?
-  (list_val (exprs list?))
-  (bool_val (val boolean?))
-  (null_val)
-  (num_val (val number?))
-  )
+
 
 ;todo init_structure "Team"
 
