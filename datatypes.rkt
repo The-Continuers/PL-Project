@@ -30,7 +30,7 @@
   (list_val (exprs list?))
   (bool_val (val boolean?))
   (null_val)
-  (num-val (val number?))
+  (num_val (val number?))
   )
 
 ;todo init_structure "Team"
