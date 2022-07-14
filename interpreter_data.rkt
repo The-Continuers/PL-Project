@@ -15,10 +15,17 @@
 
 (define scope-index? (lambda (n) (< n (length scope-mem))))
 
-  (define-datatype proc proc?
-  (procedure
+(define-datatype proc proc?
+  (new-proc
    (params list?)
    (statements list?)
    (parent-scope scope-index?)
    )
-  )
+)
+
+(define-datatype activation-record activation-record?
+  (new-record (proc proc?) (my-scope scope-index?))
+)
+
+(provide (all-defined-out))
+(#%provide (all-defined))

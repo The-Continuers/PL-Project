@@ -1,17 +1,16 @@
 #lang racket
 
+
 (require "parser.rkt")
 
 (require "datatypes.rkt")
 (#%require "datatypes.rkt")
+(require "interpreter_data.rkt")
+(#%require "interpreter_data.rkt")
 
-
-
-(define scope-mem (list))
 
 
 ; Scope
-
 ;grammar
 
 (define-datatype scope scope?
@@ -21,7 +20,6 @@
 
 
 ;interface
-
 (define report-no-binding-found
   (lambda (search-var) (eopl:error 'apply-env "404: ~s" search-var))
  )
@@ -40,20 +38,3 @@
      )
    )
   )
-
-
-; 
-
-
-(define exec
-  (
-      lambda (stmt) stmt
-  )
-)
-
-(define exec-prog
-  (
-      lambda (ast)
-
-  )
-)
