@@ -19,7 +19,6 @@
   (new-proc
    (params list?)
    (statements list?)
-   (parent-scope scope-index?)
    )
 )
 

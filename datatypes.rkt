@@ -21,14 +21,19 @@
 (define-datatype expression expression?
   (binary_op (op procedure?) (left expression?) (right expression?))
   (unary_op (op procedure?) (operand expression?))
-  (function_call (func expression?) (params list?))
+  (function_call (func expression?) (params expression*?))
   (list_ref (ref expression?) (index expression?))
   (ref (var symbol?))
 
   (atomic_bool_exp (bool boolean?))
   (atomic_num_exp (num number?))
   (atomic_null_exp)
-  (atomic_list_exp (l list?))
+  (atomic_list_exp (l expression*?))
+  )
+
+(define-datatype expression* expression*?
+  (empty-expr)
+  (expressions (expr expression?) (rest expression*?))
   )
 
 
