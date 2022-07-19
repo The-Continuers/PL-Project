@@ -14,7 +14,7 @@
 
 (define-datatype env-not-found env-not-found?
   (new-env-not-found)
-)
+  )
 
 (define (apply-env env var1)
   (cases environment env
@@ -26,59 +26,62 @@
 ; Scope
 (define-datatype scope scope?
   (new-scope (env environment?) (parent-index scope-index?) (globals list?))
-)
+  )
 
 (define (scope->env -scope)
   (cases scope -scope
     (new-scope (env parent-index globals) env)
+    )
   )
-)
 
 (define (scope->parent-index -scope)
   (cases scope -scope
     (new-scope (env parent-index globals) parent-index)
+    )
   )
-)
 
 (define (scope->globals -scope)
   (cases scope -scope
     (new-scope (env parent-index globals) globals)
+    )
   )
-)
 
 (define (get-scope-by-index scope-index)
   (list-ref scope-mem scope-index)
-)
-
-(define (extend-scope scope-index var val)
-  (
-    let ([my-scope (get-scope-by-index scope-index)])
-      (
-        let ([new-env (extend-env var val (scope->env my-scope))])
-          (set! scope-mem 
-            (list-set scope-mem scope-index 
-              (new-scope new-env (scope->parent-index my-scope) (scope->globals my-scope))
-            )
-          )
-      )
   )
-)
+
+(define (extend-scope -scope -var -car)
+  (let ([new-env (extend-env var val (scope->env -scope))])
+    (new-scope new-env
+               (scope->parent-index -scope)
+               (scope->globals -scope))
+    )
+  )
+
+(define (extend-scope-index scope-index var val)
+  (
+   let ([-scope
+         (extend-scope (get-scope-by-index scope-index)
+                       var val)])
+    (set! scope-mem
+          (list-set scope-mem scope-index -scope)
+          )))
 
 (define (apply-scope-index scope-index var)
   (
-    let ([my-scope (get-scope-by-index scope-index)])
-      (
-        (
-          let ([res (apply-env (scope->env my-scope))])
-            (cond
-              [(not (equal? res (new-env-not-found))) res]
-              [(>= (scope->parent-index my-scope) 0) (apply-scope-index (scope->parent-index my-scope))]
-              [else (report-not-found my-scope var)]
-            )
-        )
-      )
+   let ([my-scope (get-scope-by-index scope-index)])
+    (
+     (
+      let ([res (apply-env (scope->env my-scope))])
+       (cond
+         [(not (equal? res (new-env-not-found))) res]
+         [(>= (scope->parent-index my-scope) 0) (apply-scope-index (scope->parent-index my-scope))]
+         [else (report-not-found my-scope var)]
+         )
+       )
+     )
+    )
   )
-)
 
 (define (extend-scope-globals scope-index var) #t)
 

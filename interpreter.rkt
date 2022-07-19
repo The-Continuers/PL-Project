@@ -11,16 +11,38 @@
 
 (require "exceptions.rkt")
 
-(define (apply-func proc1 param-values scope-index) #t)
+(define (extend-params-scopes -scope params param-values)
+  (cases eval-func-param* params
+    (empty-eval-func-param -scope)
+    (eval-func-params (eval-param rest-evals)
+                      (cases eval-func-param eval-param
+                        (eval_with_default
+                         (param-var param-val)
+                         (extend-params-scopes
+                          (extend-scope -scope param-var (car param-values))
+                          rest-evals (cdr param-values)))
+                        )
+                      )
+    ))
+
+(define (apply-func proc1 param-values scope-index)
+  (cases proc proc1
+    (new-proc (params sts parent-scope)
+              (let ([func-scope (extend-params-scopes
+                                 (get-scope-by-index scope-index)
+                                 params param-values)])
+                (exec-stmts sts (add-scope func-scope))))
+    )
+  )
 
 (define (expression*->list-val -expressions scope-index)
   (cases expression* -expressions
     (empty-expr () (list))
-    (expressions (expr rest-exprs) 
-      (cons (value-of expr scope-index) (expression*->list-val rest-exprs scope-index))
+    (expressions (expr rest-exprs)
+                 (cons (value-of expr scope-index) (expression*->list-val rest-exprs scope-index))
+                 )
     )
   )
-)
 
 (define (value-of expr scope-index)
   (cases expression expr
@@ -63,14 +85,24 @@ def f():
 a = 2
 |#
 
-(define (check-global var scope-index) #t)
+; shouldn't be in the scope itself.
+(define (check-global var scope-index)
+  (let ([-scope (get-scope-by-index scope-index)])
+    (if
+     (equal?
+      (apply-env (scope->env -scope))
+      (new-env-not-found))
+     null
+     (report-not-global -scope var)
+     )
+    ))
 
 
 (define (apply-for iter iter_list sts scope-index parent_stmt)
   (cond
     [(not (pair? iter)) (report-not-pair iter_list parent_stmt)]
     [(null? iter_list) null]
-    [else (let ([_ (extend-scope scope-index iter (car iter_list))])
+    [else (let ([_ (extend-scope-index scope-index iter (car iter_list))])
             (let ([first_exec_result (exec-stmts sts scope-index)])
               (cond
                 [(equal? first_exec_result (new-break)) null]
@@ -79,23 +111,24 @@ a = 2
             )]
     ))
 
+
 (define (func-param->eval-func-param -func_param scope-index)
   (cases func_param -func_param
     (with_default (var expr) (eval_with_default var (value-of expr scope-index)))
+    )
   )
-)
 
 (define (func_params->eval-func-params -func_params scope-index)
   (cases func_param* -func_params
     (empty-param () (empty-eval-func-param))
-    (func_params (param rest-params) 
-      (eval-func-params 
-        (func-param->eval-func-param param scope-index)
-        (func_params->eval-func-params rest-params scope-index)
-      )
+    (func_params (param rest-params)
+                 (eval-func-params
+                  (func-param->eval-func-param param scope-index)
+                  (func_params->eval-func-params rest-params scope-index)
+                  )
+                 )
     )
   )
-)
 
 (define (apply-if cond-val if-sts else-sts scope-index parent_stmt)
   (cond
@@ -103,11 +136,11 @@ a = 2
     [cond-val (exec-stmts if-sts scope-index)]
     [else (exec-stmts else-sts scope-index)]
     )
-)
+  )
 
 (define (exec stmt scope-index)
   (cases statement stmt
-    (assign (var expr) (let ([expr-val (value-of expr scope-index)]) (extend-scope scope-index var expr-val)))
+    (assign (var expr) (let ([expr-val (value-of expr scope-index)]) (extend-scope-index scope-index var expr-val)))
     (global (var) (let ([checked (check-global var scope-index)]) (extend-scope-globals scope-index var)))
     (return (expr) (value-of expr scope-index))
     (return_void () null)
@@ -115,9 +148,9 @@ a = 2
     (break () (new-break))
     (continue () (new-continue))
     (func (name params statements) (
-      let ([prc (new-proc (func_params->eval-func-params params scope-index) statements scope-index)])
-      (extend-scope scope-index name prc)
-    ))
+                                    let ([prc (new-proc (func_params->eval-func-params params scope-index) statements scope-index)])
+                                     (extend-scope-index scope-index name prc)
+                                     ))
     (if_stmt (cond_exp if_sts else_sts) (apply-if
                                          (value-of cond_exp scope-index) if_sts else_sts scope-index
                                          stmt))

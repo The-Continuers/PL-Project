@@ -6,4 +6,6 @@
 
 (define (report-not-found scope var) #t)
 
+(define (report-not-global -scope var) #t)
+
 (provide (all-defined-out))
