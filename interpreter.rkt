@@ -138,10 +138,18 @@ a = 2
     )
   )
 
+(define (apply-assign var val scope-index)
+  (let ([assign-scope-index (if
+                             (is-global? var scope-index)
+                             (scope->parent-index (get-scope-by-index scope-index))
+                             scope-index)])
+    (extend-scope-index assign-scope-index var val))
+  )
+
 (define (exec stmt scope-index)
   (cases statement stmt
-    (assign (var expr) (let ([expr-val (value-of expr scope-index)]) (extend-scope-index scope-index var expr-val)))
-    (global (var) (let ([checked (check-global var scope-index)]) (extend-scope-globals scope-index var)))
+    (assign (var expr) (apply-assign var (value-of expr scope-index) scope-index))
+    (global (var) (let ([checked (check-global var scope-index)]) (extend-scope-index-globals scope-index var)))
     (return (expr) (value-of expr scope-index))
     (return_void () null)
     (pass () null)

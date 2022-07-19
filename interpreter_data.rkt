@@ -58,14 +58,15 @@
     )
   )
 
+(define (set-scope scope-index -scope)
+  (set! scope-mem
+        (list-set scope-mem scope-index -scope)
+        ))
+
 (define (extend-scope-index scope-index var val)
-  (
-   let ([-scope
-         (extend-scope (get-scope-by-index scope-index)
-                       var val)])
-    (set! scope-mem
-          (list-set scope-mem scope-index -scope)
-          )))
+  (set-scope scope-index
+             (extend-scope (get-scope-by-index scope-index) var val)
+             ))
 
 (define (apply-scope-index scope-index var)
   (
@@ -83,7 +84,15 @@
     )
   )
 
-(define (extend-scope-globals scope-index var) #t)
+(define (extend-scope-globals -scope var)
+  (new-scope (scope->env -scope) (scope->parent-index -scope)
+             (append (scope->globals -scope) (list var))
+             ))
+
+(define (extend-scope-index-globals scope-index var)
+  (set-scope scope-index
+             (extend-scope-globals (get-scope-by-index scope-index) var val)
+             ))
 
 (define scope-index? (lambda (n) (< n (length scope-mem))))
 
