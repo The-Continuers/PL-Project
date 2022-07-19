@@ -6,14 +6,19 @@
 
 (require "datatypes.rkt")
 (#%require "datatypes.rkt")
+
 (require "interpreter_data.rkt")
 (#%require "interpreter_data.rkt")
+
+(require "scope_mem.rkt")
+(require "scope_datatype.rkt")
+(require "scope_procs.rkt")
 
 (require "exceptions.rkt")
 
 (define (extend-params-scopes -scope params param-values)
   (cases eval-func-param* params
-    (empty-eval-func-param -scope)
+    (empty-eval-func-param () -scope)
     (eval-func-params (eval-param rest-evals)
                       (cases eval-func-param eval-param
                         (eval_with_default
@@ -84,18 +89,11 @@ def f():
 
 a = 2
 |#
-
 ; shouldn't be in the scope itself.
 (define (check-global var scope-index)
-  (let ([-scope (get-scope-by-index scope-index)])
-    (if
-     (equal?
-      (apply-env (scope->env -scope))
-      (new-env-not-found))
-     null
-     (report-not-global -scope var)
-     )
-    ))
+  (if (scope-index-contains-itself scope-index)
+      (report-not-global (get-scope-by-index scope-index) var)
+      '()))
 
 
 (define (apply-for iter iter_list sts scope-index parent_stmt)
@@ -140,7 +138,7 @@ a = 2
 
 (define (apply-assign var val scope-index)
   (let ([assign-scope-index (if
-                             (is-global? var scope-index)
+                             (is-global? scope-index var)
                              (scope->parent-index (get-scope-by-index scope-index))
                              scope-index)])
     (extend-scope-index assign-scope-index var val))
