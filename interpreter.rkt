@@ -1,9 +1,6 @@
 #lang racket
 (require (lib "eopl.ss" "eopl"))
 
-
-(require "parser.rkt")
-
 (require "datatypes.rkt")
 (#%require "datatypes.rkt")
 
