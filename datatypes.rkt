@@ -9,13 +9,18 @@
   (pass)
   (break)
   (continue)
-  (func (name symbol?) (params list?) (statements list?))
+  (func (name symbol?) (params func_param*?) (statements list?))
   (if_stmt (cond_exp expression?) (if_sts list?) (else_sts list?))
   (for_stmt (iter symbol?) (list_exp expression?) (sts list?))
   )
 
 (define-datatype func_param func_param?
   (with_default (var symbol?) (expr expression?))
+  )
+
+(define-datatype func_param* func_param*?
+  (empty-param)
+  (func_params (param func_param?) (rest func_param*?))
   )
 
 (define-datatype expression expression?

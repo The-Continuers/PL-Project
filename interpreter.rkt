@@ -9,6 +9,9 @@
 (require "interpreter_data.rkt")
 (#%require "interpreter_data.rkt")
 
+
+(require "exceptions.rkt")
+
 ; Scope
 (define-datatype scope scope?
   (new-scope (env environment?) (parent-index scope-index?))
@@ -18,9 +21,6 @@
 (define (apply-scope scope search-var) #t)
 
 (define (apply-scope-index scope-index search-var) #t)
-
-
-(define (return-true x) #t)
 
 ; envs
 (define-datatype environment environment?
@@ -94,6 +94,20 @@ a = 2
 
 (define (extend-scope-globals scope-index var) #t)
 
+
+(define (apply-for iter iter_list sts scope-index parent_stmt)
+  (cond
+    [(not (pair? iter)) (report-not-pair iter_list parent_stmt)]
+    [(null? iter_list) null]
+    [else (let ([_ (extend-scope scope-index iter (car iter_list))])
+            (let ([first_exec_result (exec-stmts sts scope-index)])
+              (cond
+                [(equal? first_exec_result (new-break)) null]
+                [else (apply-for iter (cdr iter_list) sts scope-index parent_stmt)])
+              )
+            )]
+    ))
+
 (define (exec stmt scope-index)
   (cases statement stmt
     (assign (var expr) (let ([expr-val (value-of expr scope-index)]) (extend-scope scope-index var expr-val)))
@@ -101,7 +115,13 @@ a = 2
     (return (expr) (value-of expr scope-index))
     (return_void () null)
     (pass () null)
-    (break () )
+    (break () (new-break))
+    (continue () (new-continue))
+    (func (name params statements) #t)
+    (if_stmt (cond_exp if_sts else_sts) #t)
+    (for_stmt (iter list_exp sts) (apply-for
+                                   iter (value-of list_exp scope-index) sts scope-index
+                                   stmt))
     )
   )
 
@@ -110,6 +130,11 @@ a = 2
     [(null? stmts) null]
     [(eq? (length stmts) 1) (exec (car stmts) scope-index)]
     [else (let ([first_exec (exec (car stmts) scope-index)])
-            (exec-stmts (cdr stmts) scope-index))]
-    )
-  )
+            (if (or
+                 (equal? first_exec (new-break))
+                 (equal? first_exec (new-continue)))
+                first_exec
+                (exec-stmts (cdr stmts) scope-index))
+            )
+          ]
+    ))
