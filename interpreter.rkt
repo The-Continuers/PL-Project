@@ -10,9 +10,9 @@
 (require "interpreter_data.rkt")
 (#%require "interpreter_data.rkt")
 
-(require "scope_mem.rkt")
-(require "scope_datatype.rkt")
-(require "scope_procs.rkt")
+(require "scope/mem.rkt")
+(require "scope/datatype.rkt")
+(require "scope/procs.rkt")
 
 (require "exceptions.rkt")
 

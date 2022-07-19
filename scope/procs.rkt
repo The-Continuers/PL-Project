@@ -1,14 +1,14 @@
 #lang racket
 (require (lib "eopl.ss" "eopl"))
 
-(require "scope_mem.rkt")
+(require "mem.rkt")
 
-(require "scope_datatype.rkt")
-(#%require "scope_datatype.rkt")
+(require "datatype.rkt")
+(#%require "datatype.rkt")
 
 (require "env.rkt")
-(require "utils.rkt")
-(require "exceptions.rkt")
+(require "../utils.rkt")
+(require "../exceptions.rkt")
 
 
 (define (apply-scope-index scope-index var)

@@ -2,7 +2,7 @@
 (require (lib "eopl.ss" "eopl"))
 
 (require "utils.rkt")
-(require "scope_mem.rkt")
+(require "scope/mem.rkt")
 
 (define-datatype exp_val exp_val?
   (list_val (exprs list?))

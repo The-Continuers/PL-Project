@@ -4,7 +4,7 @@
 (require "env.rkt")
 (#%require "env.rkt")
 
-(require "scope_mem.rkt")
+(require "mem.rkt")
 
 ; Datatype
 (define-datatype scope scope?
