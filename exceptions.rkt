@@ -4,4 +4,6 @@
 
 (define (report-not-boolean cond-val parent_stmt) #t)
 
+(define (report-not-found scope var) #t)
+
 (provide (all-defined-out))

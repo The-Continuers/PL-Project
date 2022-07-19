@@ -9,38 +9,7 @@
 (require "interpreter_data.rkt")
 (#%require "interpreter_data.rkt")
 
-
 (require "exceptions.rkt")
-
-; Scope
-(define-datatype scope scope?
-  (new-scope (env environment?) (parent-index scope-index?))
-  )
-
-
-(define (apply-scope scope search-var) #t)
-
-(define (apply-scope-index scope-index search-var) #t)
-
-; envs
-(define-datatype environment environment?
-  (init-env)
-  (extend-env (var return-true) (val return-true) (before-env environment?))
-  )
-
-(define (apply-env env var1)
-  (cases environment env
-    (init-env () (report-no-binding-found var1))
-    (extend-env (var val before-env) (if (equal? var var1) val (apply-env before-env var1)))
-    )
-  )
-
-
-; interface
-(define report-no-binding-found
-  (lambda (search-var) (eopl:error 'apply-env "404: ~s" search-var))
-  )
-
 
 (define (apply-func proc1 param-values scope-index) #t)
 
@@ -76,9 +45,6 @@
     )
   )
 
-
-(define (extend-scope scope-index var expr-val) #t)
-
 #|
   #1
 
@@ -98,8 +64,6 @@ a = 2
 |#
 
 (define (check-global var scope-index) #t)
-
-(define (extend-scope-globals scope-index var) #t)
 
 
 (define (apply-for iter iter_list sts scope-index parent_stmt)
