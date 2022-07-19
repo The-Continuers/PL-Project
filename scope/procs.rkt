@@ -59,5 +59,27 @@
   (contains (scope->globals (get-scope-by-index scope-index)) var)
   )
 
+#|
+
+#1
+a = 2;
+global a
+
+#2
+def f():
+	a = 4
+	print(a)
+	global a;
+	print(a)
+
+a = 2
+
+|#
+; shouldn't be in the scope itself.
+(define (check-global var scope-index)
+  (if (scope-index-contains-itself scope-index)
+      (report-not-global (get-scope-by-index scope-index) var)
+      '()))
+
 
 (provide (all-defined-out))

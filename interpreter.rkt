@@ -72,44 +72,6 @@
     )
   )
 
-#|
-  #1
-
-a = 2;
-global a
-
-#2
-
-
-def f():
-	a = 4
-	print(a)
-	global a;
-	print(a)
-
-a = 2
-|#
-; shouldn't be in the scope itself.
-(define (check-global var scope-index)
-  (if (scope-index-contains-itself scope-index)
-      (report-not-global (get-scope-by-index scope-index) var)
-      '()))
-
-
-(define (apply-for iter iter_list sts scope-index parent_stmt)
-  (cond
-    [(not (pair? iter)) (report-not-pair iter_list parent_stmt)]
-    [(null? iter_list) null]
-    [else (let ([_ (extend-scope-index scope-index iter (car iter_list))])
-            (let ([first_exec_result (exec-stmts sts scope-index)])
-              (cond
-                [(equal? first_exec_result (new-break)) null]
-                [else (apply-for iter (cdr iter_list) sts scope-index parent_stmt)])
-              )
-            )]
-    ))
-
-
 (define (func-param->eval-func-param -func_param scope-index)
   (cases func_param -func_param
     (with_default (var expr) (eval_with_default var (value-of expr scope-index)))
@@ -127,6 +89,20 @@ a = 2
                  )
     )
   )
+
+
+(define (apply-for iter iter_list sts scope-index parent_stmt)
+  (cond
+    [(not (pair? iter)) (report-not-pair iter_list parent_stmt)]
+    [(null? iter_list) null]
+    [else (let ([_ (extend-scope-index scope-index iter (car iter_list))])
+            (let ([first_exec_result (exec-stmts sts scope-index)])
+              (cond
+                [(equal? first_exec_result (new-break)) null]
+                [else (apply-for iter (cdr iter_list) sts scope-index parent_stmt)])
+              )
+            )]
+    ))
 
 (define (apply-if cond-val if-sts else-sts scope-index parent_stmt)
   (cond
