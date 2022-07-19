@@ -36,7 +36,7 @@
   )
 
 
-;interface
+; interface
 (define report-no-binding-found
   (lambda (search-var) (eopl:error 'apply-env "404: ~s" search-var))
   )
@@ -44,7 +44,14 @@
 
 (define (apply-func proc1 param-values scope-index) #t)
 
-(define (expression*->list-val expressions scope-index) #t)
+(define (expression*->list-val -expressions scope-index)
+  (cases expression* -expressions
+    (empty-expr () (list))
+    (expressions (expr rest-exprs) 
+      (cons (value-of expr scope-index) (expression*->list-val rest-exprs scope-index))
+    )
+  )
+)
 
 (define (value-of expr scope-index)
   (cases expression expr
@@ -108,6 +115,32 @@ a = 2
             )]
     ))
 
+(define (func-param->eval-func-param -func_param scope-index)
+  (cases func_param -func_param
+    (with_default (var expr) (eval_with_default var (value-of expr scope-index)))
+  )
+)
+
+(define (func_params->eval-func-params -func_params scope-index)
+  (cases func_param* -func_params
+    (empty-param () (empty-eval-func-param))
+    (func_params (param rest-params) 
+      (eval-func-params 
+        (func-param->eval-func-param param scope-index)
+        (func_params->eval-func-params rest-params scope-index)
+      )
+    )
+  )
+)
+
+(define (apply-if cond-val if-sts else-sts scope-index parent_stmt)
+  (cond
+    [(boolean? cond-val) (report-not-boolean cond-val parent_stmt)]
+    [cond-val (exec-stmts if-sts scope-index)]
+    [else (exec-stmts else-sts scope-index)]
+    )
+)
+
 (define (exec stmt scope-index)
   (cases statement stmt
     (assign (var expr) (let ([expr-val (value-of expr scope-index)]) (extend-scope scope-index var expr-val)))
@@ -117,8 +150,13 @@ a = 2
     (pass () null)
     (break () (new-break))
     (continue () (new-continue))
-    (func (name params statements) #t)
-    (if_stmt (cond_exp if_sts else_sts) #t)
+    (func (name params statements) (
+      let ([prc (new-proc (func_params->eval-func-params params scope-index) statements scope-index)])
+      (extend-scope scope-index name prc)
+    ))
+    (if_stmt (cond_exp if_sts else_sts) (apply-if
+                                         (value-of cond_exp scope-index) if_sts else_sts scope-index
+                                         stmt))
     (for_stmt (iter list_exp sts) (apply-for
                                    iter (value-of list_exp scope-index) sts scope-index
                                    stmt))

@@ -19,14 +19,14 @@
 ; for function definitions
 (define-datatype proc proc?
   (new-proc
-   (params list?)
+   (params eval-func-param*?)
    (statements list?)
    (parent-scope scope-index?)
    )
   )
 
 (define-datatype eval-func-param eval-func-param?
-  (eval_with_default (var symbol?) (expr return-true))
+  (eval_with_default (var symbol?) (val return-true))
   )
 
 (define-datatype eval-func-param* eval-func-param*?

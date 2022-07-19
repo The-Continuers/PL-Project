@@ -20,7 +20,7 @@
 
 (define-datatype func_param* func_param*?
   (empty-param)
-  (func_params (param func_param?) (rest func_param*?))
+  (func_params (param func_param?) (rest-params func_param*?))
   )
 
 (define-datatype expression expression?
@@ -38,7 +38,7 @@
 
 (define-datatype expression* expression*?
   (empty-expr)
-  (expressions (expr expression?) (rest expression*?))
+  (expressions (expr expression?) (rest-exprs expression*?))
   )
 
 
