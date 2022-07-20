@@ -1,5 +1,6 @@
 #lang racket
 (require (lib "eopl.ss" "eopl"))
+(require racket/trace)
 
 (require "../datatypes.rkt")
 (#%require "../datatypes.rkt")
@@ -10,6 +11,7 @@
 (require "scope/mem.rkt")
 (require "scope/datatype.rkt")
 (require "scope/procs.rkt")
+(require "scope/env.rkt")
 
 (require "../exceptions.rkt")
 
@@ -31,7 +33,7 @@
   (cases proc proc1
     (new-proc (params sts parent-scope)
               (let ([func-scope (extend-params-scopes
-                                 (get-scope-by-index scope-index)
+                                 (new-scope (init-env) parent-scope (list))
                                  params param-values)])
                 (exec-stmts sts (add-scope func-scope))))
     )
@@ -112,8 +114,8 @@
 
 (define (apply-assign var val scope-index)
   (let ([assign-scope-index (if
-                             (is-global? scope-index var)
-                             (scope->parent-index (get-scope-by-index scope-index))
+                             (is-global? var scope-index)
+                             ROOT
                              scope-index)])
     (extend-scope-index assign-scope-index var val))
   )
@@ -128,7 +130,12 @@
     (break () (new-break))
     (continue () (new-continue))
     (func (name params statements) (
-                                    let ([prc (new-proc (func_params->eval-func-params params scope-index) statements scope-index)])
+                                    let ([
+                                            prc (new-proc 
+                                            (func_params->eval-func-params params scope-index) 
+                                            statements 
+                                            scope-index)
+                                    ])
                                      (extend-scope-index scope-index name prc)
                                      ))
     (if_stmt (cond_exp if_sts else_sts) (apply-if
@@ -139,7 +146,7 @@
                                    stmt))
     )
   )
-
+;(trace exec value-of)
 (define (exec-stmts stmts scope-index)
   (cond
     [(null? stmts) null]

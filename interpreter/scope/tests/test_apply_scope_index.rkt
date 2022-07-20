@@ -13,5 +13,5 @@
 (extend-scope-index ROOT "y" 100)
 (add-scope (new-scope (extend-env "y" 12 (init-env)) ROOT (list)))
 (add-scope (new-scope (extend-env "x" 12 (init-env)) 1 (list "y")))
-(check-true (is-defined-as-global? (get-scope-by-index 2) "y"))
+(check-true (is-global? (get-scope-by-index 2) "y"))
 (check-eq? (apply-scope-index 2 "y") 100)

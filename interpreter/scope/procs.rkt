@@ -1,5 +1,6 @@
 #lang racket
 (require (lib "eopl.ss" "eopl"))
+(require racket/trace)
 
 (require "mem.rkt")
 
@@ -10,16 +11,11 @@
 (require "../../utils.rkt")
 (require "../../exceptions.rkt")
 
-
-(define (is-defined-as-global? my-scope var)
-  (contains (scope->globals my-scope) var)
-)
-
 (define (apply-scope-index scope-index var)
   (
    let ([my-scope (get-scope-by-index scope-index)])
     (
-     if (is-defined-as-global? my-scope var) 
+     if (is-global? var scope-index) 
      (apply-scope-index ROOT var)
      (
       let ([res (apply-env (scope->env my-scope) var)])
@@ -32,6 +28,8 @@
      )
     )
   )
+
+; (trace apply-scope-index)
 
 (define (init-scope) (new-scope (init-env) -1 '()))
 
@@ -58,7 +56,7 @@
              ))
 
 
-(define (scope-index-contains-itself var scope-index )
+(define (scope-index-contains-itself var scope-index)
   (not (equal?
         (apply-env (scope->env (get-scope-by-index scope-index)) var)
         (new-env-not-found))))

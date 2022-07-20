@@ -7,7 +7,7 @@
 
 (define (get-scope-by-index scope-index)
   (list-ref scope-mem scope-index)
-  )
+)
 
 (define (set-scope scope-index -scope)
   (set! scope-mem
