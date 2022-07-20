@@ -5,3 +5,5 @@
 (require "executor.rkt")
 
 (define interpret (compose exec-program break_checker parse-scan))
+
+(provide (all-defined-out))
