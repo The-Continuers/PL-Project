@@ -11,7 +11,8 @@
   (parser
    (start Program)
    (end EOF)
-   (error (lambda (x y z) (display-lines (list x y z))))
+   ;    (error (lambda (x y z) (display-lines (list x y z))))
+   (error void)
    (tokens
     LITERALS KWS OPS LOOP_KWS BOOL_KWS BOOL_OPS
     COND_KWS COND_OPS ARITH_OPS INDEX_OPS END
@@ -104,7 +105,7 @@
     (Expressions ((Expressions COMMA Expression) (expressions $3 $1))
                  ((Expression) (expressions $1 (empty-expr)))
                  ))
-   (debug "x.txt")
+   ;    (debug "x.txt")
    ))
 
 (define (parse-scan prog-string) (python-parser (lex-this prog-string)))

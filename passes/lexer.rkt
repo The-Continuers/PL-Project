@@ -27,11 +27,11 @@
    ("None" (token-NONE))
    ;OPS
    ("=" (token-ASSIGN))
+   ("():" (token-PAR_COLON))
+   ("()" (token-PAR))
    ("(" (token-LPAR))
    (")" (token-RPAR))
-   ("()" (token-PAR))
    (":" (token-COLON))
-   ("():" (token-PAR_COLON))
    ("," (token-COMMA))
    (";" (token-SEMICOLON))
    ;LOOP_KWS
@@ -54,13 +54,13 @@
    ;ARITH_OPS
    ("+" (token-PLUS))
    ("-" (token-MINUS))
+   ("**" (token-POW))
    ("*" (token-MULTI))
    ("/" (token-DIV))
-   ("**" (token-POW))
    ;INDEX_OPS (LBRACK RBRACK BRACK)
+   ("[]" (token-BRACK))
    ("[" (token-LBRACK))
    ("]" (token-RBRACK))
-   ("[]" (token-BRACK))
    (
     (:or (:+ (char-range #\0 #\9))
          (:: (:+ (char-range #\0 #\9)) #\. (:+ (char-range #\0 #\9))))
