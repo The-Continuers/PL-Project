@@ -59,7 +59,7 @@
                                ))
     (list_ref (ref index) (let ([ref-value (value-of ref scope-index)]
                                 [index-value (value-of index scope-index)])
-                            (list-ref ref index)
+                            (list-ref ref-value index-value)
                             ))
     (ref (var) (apply-scope-index scope-index var))
     (atomic_bool_exp (bool) bool)

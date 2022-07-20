@@ -25,7 +25,7 @@
       let ([res (apply-env (scope->env my-scope) var)])
        (cond
          [(not (equal? res (new-env-not-found))) res]
-         [(>= (scope->parent-index my-scope) 0) (apply-scope-index (scope->parent-index my-scope))]
+         [(>= (scope->parent-index my-scope) 0) (apply-scope-index (scope->parent-index my-scope) var)]
          [else (report-not-found my-scope var)]
          )
       )
