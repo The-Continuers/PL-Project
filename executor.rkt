@@ -152,3 +152,13 @@
             )
           ]
     ))
+
+(define (exec-program program)
+  (begin
+    (reset-scope)
+    (add-scope (init-scope))
+    (exec-stmts program 0)
+    )
+  )
+
+(provide (all-defined-out))

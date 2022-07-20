@@ -1,5 +1,6 @@
 {
     "conventionalCommits.scopes": [
-        "break-checker"
+        "break-checker",
+        "core"
     ]
 }

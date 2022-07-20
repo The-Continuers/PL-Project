@@ -20,4 +20,6 @@
     (- (length scope-mem) 1)
     ))
 
+(define (reset-scope) (set! scope-mem (list)))
+
 (provide (all-defined-out))

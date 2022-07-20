@@ -27,7 +27,5 @@
     ))
 
 
-(add-scope (new-scope (init-env) -1 '()))
-
 (provide (all-defined-out))
 (#%provide (all-defined))

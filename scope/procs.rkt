@@ -27,6 +27,8 @@
     )
   )
 
+(define (init-scope) (new-scope (init-env) -1 '()))
+
 (define (extend-scope -scope -var -val)
   (let ([new-env (extend-env -var -val (scope->env -scope))])
     (new-scope new-env
