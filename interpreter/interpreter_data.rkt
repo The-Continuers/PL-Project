@@ -15,7 +15,7 @@
   )
 
 (define-datatype eval-func-param eval-func-param?
-  (eval_with_default (var symbol?) (val return-true))
+  (eval_with_default (var string?) (val return-true))
   )
 
 (define-datatype eval-func-param* eval-func-param*?

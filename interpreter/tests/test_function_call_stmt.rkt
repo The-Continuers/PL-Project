@@ -7,4 +7,6 @@
 (require "../executor.rkt")
 (require "../scope/mem.rkt")
 
-(check-eq? (exec-program program-test-2) 2.5)
+(check-equal? (exec-program program-test-2) 5/2)
+
+(check-equal? (exec-program program-test-1) 8)

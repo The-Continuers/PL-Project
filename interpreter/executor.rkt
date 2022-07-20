@@ -106,7 +106,7 @@
 
 (define (apply-if cond-val if-sts else-sts scope-index parent_stmt)
   (cond
-    [(boolean? cond-val) (report-not-boolean cond-val parent_stmt)]
+    [(not (boolean? cond-val)) (report-not-boolean cond-val parent_stmt)]
     [cond-val (exec-stmts if-sts scope-index)]
     [else (exec-stmts else-sts scope-index)]
     )
@@ -131,11 +131,11 @@
     (continue () (new-continue))
     (func (name params statements) (
                                     let ([
-                                            prc (new-proc 
-                                            (func_params->eval-func-params params scope-index) 
-                                            statements 
-                                            scope-index)
-                                    ])
+                                          prc (new-proc
+                                               (func_params->eval-func-params params scope-index)
+                                               statements
+                                               scope-index)
+                                              ])
                                      (extend-scope-index scope-index name prc)
                                      ))
     (if_stmt (cond_exp if_sts else_sts) (apply-if
