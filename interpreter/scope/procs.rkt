@@ -52,17 +52,17 @@
              ))
 
 
-(define (scope-index-contains-itself scope-index)
+(define (scope-index-contains-itself var scope-index )
   (not (equal?
-        (apply-env (scope->env (get-scope-by-index scope-index)))
+        (apply-env (scope->env (get-scope-by-index scope-index)) var)
         (new-env-not-found))))
 
-(define (is-global? scope-index var)
+(define (is-global? var scope-index)
   (contains (scope->globals (get-scope-by-index scope-index)) var)
   )
 
 (define (check-global var scope-index)
-  (if (scope-index-contains-itself scope-index)
+  (if (scope-index-contains-itself var scope-index)
       (report-not-global (get-scope-by-index scope-index) var)
       '()))
 

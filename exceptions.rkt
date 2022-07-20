@@ -34,7 +34,7 @@
 (define (raise e)
     (eopl:error 
         (exception->exception-type e) 
-        (string-join (list (exception->trace-back e) (exception->message e)) "\n")
+        (string-join (list (~v (exception->trace-back e)) (exception->message e)) "\n")
     )
 )
 
