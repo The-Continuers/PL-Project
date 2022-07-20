@@ -2,6 +2,6 @@
 
 (define (return-true x) #t)
 
-(define (contains l x) (not (null? (member x l))))
+(define (contains l x) (if (member x l) #t #f))
 
 (provide (all-defined-out))

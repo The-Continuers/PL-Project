@@ -65,7 +65,7 @@
     (atomic_bool_exp (bool) bool)
     (atomic_num_exp (num) num)
     (atomic_null_exp () null)
-    (atomic_list_exp (l) (expression*->list-val l))
+    (atomic_list_exp (l) (expression*->list-val l scope-index))
     )
   )
 
@@ -89,17 +89,18 @@
 
 
 (define (apply-for iter iter_list sts scope-index parent_stmt)
-  (cond
-    [(not (pair? iter)) (report-not-pair iter_list parent_stmt)]
-    [(null? iter_list) null]
-    [else (let ([_ (extend-scope-index scope-index iter (car iter_list))])
-            (let ([first_exec_result (exec-stmts sts scope-index)])
-              (cond
-                [(equal? first_exec_result (new-break)) null]
-                [else (apply-for iter (cdr iter_list) sts scope-index parent_stmt)])
-              )
-            )]
-    ))
+  (begin (display-lines (list iter_list))
+         (cond
+           [(not (pair? iter)) (report-not-pair iter_list parent_stmt)]
+           [(null? iter_list) null]
+           [else (let ([_ (extend-scope-index scope-index iter (car iter_list))])
+                   (let ([first_exec_result (exec-stmts sts scope-index)])
+                     (cond
+                       [(equal? first_exec_result (new-break)) null]
+                       [else (apply-for iter (cdr iter_list) sts scope-index parent_stmt)])
+                     )
+                   )]
+           )))
 
 (define (apply-if cond-val if-sts else-sts scope-index parent_stmt)
   (cond

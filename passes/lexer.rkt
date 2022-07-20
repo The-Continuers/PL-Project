@@ -79,16 +79,13 @@
 
 
 ;test
-(define lex-test-1 "1+2+ 3 +   4")
-(define lex-test-2 "_qAre9j")
-(define (lex-this prog-string) (let
-                                   ([l (open-input-string prog-string)])
-                                 (lambda () (python-lexer l)))
-  )
+(define (lex-this prog-string)
+  (let ([l (open-input-string prog-string)])
+    (begin
+      (display-lines (list prog-string))
+      (lambda () (display-return (python-lexer l))))
+    ))
 
-(define lex-1 (lex-this lex-test-1))
-(lex-1)
-(lex-1)
-(lex-1)
+(define (display-return l) (begin (display-lines (list l)) l ))
 
 (provide (all-defined-out))

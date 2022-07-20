@@ -100,3 +100,6 @@ fabric.properties
 .history/
 
 .idea
+test_cases
+
+x.txt
