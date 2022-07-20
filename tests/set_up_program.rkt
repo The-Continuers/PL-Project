@@ -1,7 +1,7 @@
 #lang racket
 (require "../datatypes.rkt")
 
-(define program-test-1 (list (func "fi" (func_params (with_default "x" (atomic_num_exp 0)))
+(define program-test-1 (list (func "fi" (func_params (with_default "x" (atomic_num_exp 0)) (empty-param))
                                    (list (if_stmt
                                           (binary_op (lambda (x y) (or x y))
                                                      (binary_op equal? (ref "x") (atomic_num_exp 0))
@@ -9,10 +9,11 @@
                                                      )
                                           (return (atomic_num_exp 1))
                                           (return (binary_op +
-                                                             (function_call (ref "fi")
+                                                            (function_call (ref "fi")
                                                                             (expressions
                                                                              (binary_op - (ref "x") (atomic_num_exp 1))
-                                                                             (empty-expr))
+                                                                             (empty-expr)))
+                                                            (function_call (ref "fi")
                                                                             (expressions
                                                                              (binary_op - (ref "x") (atomic_num_exp 2))
                                                                              (empty-expr))
