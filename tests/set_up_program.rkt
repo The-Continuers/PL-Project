@@ -7,17 +7,17 @@
                                                      (binary_op equal? (ref "x") (atomic_num_exp 0))
                                                      (binary_op equal? (ref "x") (atomic_num_exp 1))
                                                      )
-                                          (return (atomic_num_exp 1))
-                                          (return (binary_op +
-                                                            (function_call (ref "fi")
-                                                                            (expressions
-                                                                             (binary_op - (ref "x") (atomic_num_exp 1))
-                                                                             (empty-expr)))
-                                                            (function_call (ref "fi")
-                                                                            (expressions
-                                                                             (binary_op - (ref "x") (atomic_num_exp 2))
-                                                                             (empty-expr))
-                                                                            ))))))
+                                          (list (return (atomic_num_exp 1)))
+                                          (list (return (binary_op +
+                                                                   (function_call (ref "fi")
+                                                                                  (expressions
+                                                                                   (binary_op - (ref "x") (atomic_num_exp 1))
+                                                                                   (empty-expr)))
+                                                                   (function_call (ref "fi")
+                                                                                  (expressions
+                                                                                   (binary_op - (ref "x") (atomic_num_exp 2))
+                                                                                   (empty-expr))
+                                                                                  )))))))
                              (return (function_call (ref "fi")
                                                     (expressions (atomic_num_exp 5) (empty-expr))))
                              ))
