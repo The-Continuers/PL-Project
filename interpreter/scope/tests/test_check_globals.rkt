@@ -10,7 +10,7 @@
 
 (reset-scope)
 (add-scope (init-scope))
-(extend-scope-index 0 "y" 1)
+(extend-scope-index ROOT "y" 1)
 (add-scope (new-scope (extend-env "x" 12 (init-env)) 0 (list)))
 (check-eq? (check-global "y" 1) '())
 

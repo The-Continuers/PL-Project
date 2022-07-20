@@ -11,10 +11,16 @@
 (require "../../exceptions.rkt")
 
 
+(define (is-defined-as-global? my-scope var)
+  (contains (scope->globals my-scope) var)
+)
+
 (define (apply-scope-index scope-index var)
   (
    let ([my-scope (get-scope-by-index scope-index)])
     (
+     if (is-defined-as-global? my-scope var) 
+     (apply-scope-index ROOT var)
      (
       let ([res (apply-env (scope->env my-scope) var)])
        (cond
@@ -22,7 +28,7 @@
          [(>= (scope->parent-index my-scope) 0) (apply-scope-index (scope->parent-index my-scope))]
          [else (report-not-found my-scope var)]
          )
-       )
+      )
      )
     )
   )

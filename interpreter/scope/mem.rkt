@@ -22,4 +22,6 @@
 
 (define (reset-scope) (set! scope-mem (list)))
 
+(define ROOT 0)
+
 (provide (all-defined-out))
