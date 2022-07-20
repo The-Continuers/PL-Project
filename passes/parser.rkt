@@ -4,8 +4,8 @@
 (require parser-tools/lex
          parser-tools/yacc)
 
-(require "datatypes.rkt")
-(#%require "datatypes.rkt")
+(require "../datatypes.rkt")
+(#%require "../datatypes.rkt")
 
 (define python-parser
   (parser
