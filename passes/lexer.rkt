@@ -83,10 +83,8 @@
 (define (lex-this prog-string)
   (let ([l (open-input-string prog-string)])
     (begin
-      (display-lines (list prog-string))
-      (lambda () (display-return (python-lexer l))))
+      ; (display-lines (list prog-string))
+      (lambda () (python-lexer l)))
     ))
-
-(define (display-return l) (begin (display-lines (list l)) l ))
 
 (provide (all-defined-out))

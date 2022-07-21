@@ -4,6 +4,8 @@
 (require parser-tools/lex
          parser-tools/yacc)
 
+(require "../utils.rkt")
+
 (require "../datatypes.rkt")
 (#%require "../datatypes.rkt")
 
@@ -110,6 +112,10 @@
    ;    (debug "x.txt")
    ))
 
-(define (parse-scan prog-string) (python-parser (lex-this prog-string)))
+(define (parse-scan prog-string)
+  ;   (display-return
+  (python-parser (lex-this prog-string))
+  ;    )
+  )
 
 (provide (all-defined-out))
