@@ -4,7 +4,7 @@
 
 (define-tokens LITERALS (ID NUMBER))
 
-(define-empty-tokens KWS (DEF GLOBAL PASS BREAK CONTINUE RETURN NONE))
+(define-empty-tokens KWS (DEF GLOBAL PASS BREAK CONTINUE RETURN NONE PRINT))
 (define-empty-tokens OPS (ASSIGN LPAR RPAR PAR COLON PAR_COLON COMMA SEMICOLON))
 (define-empty-tokens LOOP_KWS (FOR IN))
 (define-empty-tokens BOOL_KWS (TRUE FALSE))
@@ -25,6 +25,7 @@
    ("continue" (token-CONTINUE))
    ("return" (token-RETURN))
    ("None" (token-NONE))
+   ("print" (token-PRINT))
    ;OPS
    ("=" (token-ASSIGN))
    ("():" (token-PAR_COLON))

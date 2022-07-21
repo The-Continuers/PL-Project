@@ -120,6 +120,10 @@
     (extend-scope-index assign-scope-index var val))
   )
 
+(define (apply-print vals)
+  (display-lines vals)
+  )
+
 (define (exec stmt scope-index)
   (cases statement stmt
     (assign (var expr) (apply-assign var (value-of expr scope-index) scope-index))
@@ -144,6 +148,7 @@
     (for_stmt (iter list_exp sts) (apply-for
                                    iter (value-of list_exp scope-index) sts scope-index
                                    stmt))
+    (print_stmt (expressions) (apply-print (expression*->list-val expressions scope-index)))
     )
   )
 ;(trace exec value-of)

@@ -31,6 +31,8 @@
                  ((PASS) (pass))
                  ((BREAK) (break))
                  ((CONTINUE) (continue))
+                 ((PRINT PAR) (print_stmt (empty-expr)))
+                 ((PRINT LPAR Arguments RPAR) (print_stmt $3))
                  )
     (Compound_stmt ((Function_def) $1)
                    ((If_stmt) $1)
