@@ -12,6 +12,7 @@
   (func (name string?) (params func_param*?) (statements list?))
   (if_stmt (cond_exp expression?) (if_sts list?) (else_sts list?))
   (for_stmt (iter string?) (list_exp expression?) (sts list?))
+  (print_stmt (expressions expression*?))
   )
 
 (define-datatype func_param func_param?

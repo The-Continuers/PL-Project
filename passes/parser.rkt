@@ -4,6 +4,8 @@
 (require parser-tools/lex
          parser-tools/yacc)
 
+(require "../utils.rkt")
+
 (require "../datatypes.rkt")
 (#%require "../datatypes.rkt")
 
@@ -31,6 +33,8 @@
                  ((PASS) (pass))
                  ((BREAK) (break))
                  ((CONTINUE) (continue))
+                 ((PRINT PAR) (print_stmt (empty-expr)))
+                 ((PRINT LPAR Arguments RPAR) (print_stmt $3))
                  )
     (Compound_stmt ((Function_def) $1)
                    ((If_stmt) $1)
@@ -42,7 +46,7 @@
                  )
     (Global_stmt ((GLOBAL ID) (global $2)))
     (Function_def ((DEF ID LPAR Params RPAR COLON Statements) (func $2 $4 $7))
-                  ((DEF ID PAR_COLON Statements) (func $2 (empty-param) $4))
+                  ((DEF ID PAR COLON Statements) (func $2 (empty-param) $5))
                   )
     (Params ((Param_with_default) (func_params $1 (empty-param)))
             ((Params COMMA Param_with_default) (func_params $3 $1))
@@ -94,7 +98,7 @@
                )
     (Atom ((ID) (ref $1))
           ((TRUE) (atomic_bool_exp true))
-          ((FALSE) (atomic_num_exp false))
+          ((FALSE) (atomic_bool_exp false))
           ((NONE) (atomic_null_exp))
           ((NUMBER) (atomic_num_exp $1))
           ((List) $1)
@@ -108,6 +112,10 @@
    ;    (debug "x.txt")
    ))
 
-(define (parse-scan prog-string) (python-parser (lex-this prog-string)))
+(define (parse-scan prog-string)
+  ;   (display-return
+  (python-parser (lex-this prog-string))
+  ;    )
+  )
 
 (provide (all-defined-out))

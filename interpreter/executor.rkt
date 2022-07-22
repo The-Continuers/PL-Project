@@ -15,6 +15,8 @@
 
 (require "../exceptions.rkt")
 
+(require "../utils.rkt")
+
 (define (extend-params-scopes -scope params param-values)
   (cases eval-func-param* params
     (empty-eval-func-param () -scope)
@@ -43,7 +45,7 @@
   (cases expression* -expressions
     (empty-expr () (list))
     (expressions (expr rest-exprs)
-                 (cons (value-of expr scope-index) (expression*->list-val rest-exprs scope-index))
+                 (append (expression*->list-val rest-exprs scope-index) (list (value-of expr scope-index)))
                  )
     )
   )
@@ -91,18 +93,21 @@
 
 
 (define (apply-for iter iter_list sts scope-index parent_stmt)
-  (begin (display-lines (list iter_list))
-         (cond
-           [(not (pair? iter)) (report-not-pair iter_list parent_stmt)]
-           [(null? iter_list) null]
-           [else (let ([_ (extend-scope-index scope-index iter (car iter_list))])
-                   (let ([first_exec_result (exec-stmts sts scope-index)])
-                     (cond
-                       [(equal? first_exec_result (new-break)) null]
-                       [else (apply-for iter (cdr iter_list) sts scope-index parent_stmt)])
-                     )
-                   )]
-           )))
+  (begin
+    ; (display-lines (list iter_list))
+    (cond
+      [(not (pair? iter_list)) (report-not-pair iter_list parent_stmt)]
+      [(null? iter_list) null]
+      [else (begin
+              (extend-scope-index scope-index iter (car iter_list))
+              ;  (display-lines (list (get-scope-by-index scope-index)))
+              (let ([first_exec_result (exec-stmts sts scope-index)])
+                (cond
+                  [(equal? first_exec_result (new-break)) null]
+                  [else (apply-for iter (cdr iter_list) sts scope-index parent_stmt)])
+                )
+              )]
+      )))
 
 (define (apply-if cond-val if-sts else-sts scope-index parent_stmt)
   (cond
@@ -118,6 +123,11 @@
                              ROOT
                              scope-index)])
     (extend-scope-index assign-scope-index var val))
+  )
+
+(define (apply-print vals)
+  ; (display-lines (list "printing"))
+  (display-lines vals)
   )
 
 (define (exec stmt scope-index)
@@ -144,9 +154,10 @@
     (for_stmt (iter list_exp sts) (apply-for
                                    iter (value-of list_exp scope-index) sts scope-index
                                    stmt))
+    (print_stmt (expressions) (apply-print (expression*->list-val expressions scope-index)))
     )
   )
-;(trace exec value-of)
+
 (define (exec-stmts stmts scope-index)
   (cond
     [(null? stmts) null]
@@ -166,7 +177,10 @@
     (reset-scope)
     (add-scope (init-scope))
     (exec-stmts program 0)
+    (void)
     )
   )
+
+; (trace exec-stmts exec value-of)
 
 (provide (all-defined-out))

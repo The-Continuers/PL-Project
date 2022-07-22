@@ -1,10 +1,11 @@
 #lang racket
 (require parser-tools/lex
          (prefix-in : parser-tools/lex-sre))
+(require "../utils.rkt")
 
 (define-tokens LITERALS (ID NUMBER))
 
-(define-empty-tokens KWS (DEF GLOBAL PASS BREAK CONTINUE RETURN NONE))
+(define-empty-tokens KWS (DEF GLOBAL PASS BREAK CONTINUE RETURN NONE PRINT))
 (define-empty-tokens OPS (ASSIGN LPAR RPAR PAR COLON PAR_COLON COMMA SEMICOLON))
 (define-empty-tokens LOOP_KWS (FOR IN))
 (define-empty-tokens BOOL_KWS (TRUE FALSE))
@@ -25,9 +26,10 @@
    ("continue" (token-CONTINUE))
    ("return" (token-RETURN))
    ("None" (token-NONE))
+   ("print" (token-PRINT))
    ;OPS
    ("=" (token-ASSIGN))
-   ("():" (token-PAR_COLON))
+   ;  ("():" (token-PAR_COLON))
    ("()" (token-PAR))
    ("(" (token-LPAR))
    (")" (token-RPAR))
@@ -82,10 +84,11 @@
 (define (lex-this prog-string)
   (let ([l (open-input-string prog-string)])
     (begin
-      (display-lines (list prog-string))
-      (lambda () (display-return (python-lexer l))))
-    ))
-
-(define (display-return l) (begin (display-lines (list l)) l ))
+      ; (display-lines (list prog-string))
+      (lambda ()
+        ; (display-return
+        (python-lexer l)
+        ;  )
+        ))))
 
 (provide (all-defined-out))
