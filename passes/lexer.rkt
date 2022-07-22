@@ -1,6 +1,7 @@
 #lang racket
 (require parser-tools/lex
          (prefix-in : parser-tools/lex-sre))
+(require "../utils.rkt")
 
 (define-tokens LITERALS (ID NUMBER))
 
@@ -28,7 +29,7 @@
    ("print" (token-PRINT))
    ;OPS
    ("=" (token-ASSIGN))
-   ("():" (token-PAR_COLON))
+   ;  ("():" (token-PAR_COLON))
    ("()" (token-PAR))
    ("(" (token-LPAR))
    (")" (token-RPAR))
@@ -84,7 +85,10 @@
   (let ([l (open-input-string prog-string)])
     (begin
       ; (display-lines (list prog-string))
-      (lambda () (python-lexer l)))
-    ))
+      (lambda ()
+        ; (display-return
+        (python-lexer l)
+        ;  )
+        ))))
 
 (provide (all-defined-out))
