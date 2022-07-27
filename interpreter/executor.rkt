@@ -53,8 +53,11 @@
 (define (value-of expr scope-index)
   (cases expression expr
     (binary_op (op left right)
-               (op (value-of left scope-index) (value-of right scope-index))
-               )
+               (let ([left-value (value-of left scope-index)])
+                 (if (and (eq? left-value 0) (eq? op *))
+                     0
+                     (op left-value (value-of right scope-index)))
+                 ))
     (unary_op (op operand) (op (value-of operand scope-index)))
     (function_call (func params)
                    (apply-func (value-of func scope-index)
