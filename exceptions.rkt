@@ -1,6 +1,7 @@
 #lang racket
 (require (lib "eopl.ss" "eopl"))
 (require "./utils.rkt")
+(require "datatypes.rkt")
 
 (define-datatype exception exception?
   (new-exception (type symbol?) (message string?) (trace-back return-true))
@@ -61,7 +62,7 @@
 (define (report-not-right-type var t)
   (raise (new-exception
           TypeError
-          (string-append var "is not a " t " Type")
+          (string-append var " is not a " (ex-type->string t) " Type")
           '()
           ))
   )

@@ -28,6 +28,17 @@
   (ex-unknown)
   )
 
+(define (ex-type->string t)
+  (cases ex-type t
+    (ex-int () "int")
+    (ex-bool () "bool")
+    (ex-float () "float")
+    (ex-list () "list")
+    (ex-none () "None")
+    (ex-unknown () "unknown")
+    )
+  )
+
 (define-datatype assignee-var assignee-var?
   (typed-var (var string?) (type is-type?))
   (untyped-var (var string?))

@@ -123,7 +123,7 @@
                     ((ID COLON Type) (typed-var $1 $3))
                     )
     (Return_type ((COLON) (ex-unknown))
-                 ((ARROW Type COLON) ($2))
+                 ((ARROW Type COLON) $2)
                  )
     )
    ;    (debug "x.txt")

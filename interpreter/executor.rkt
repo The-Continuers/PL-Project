@@ -93,17 +93,17 @@
   )
 
 (define (type-of expr scope-index)
-  ((cases expression expr
-     (binary_op (op left right) (type-of left scope-index))
-     (unary_op (op operand) (type-of operand scope-index))
-     (function_call (func params) (proc->r_type (type-of func scope-index)))
-     (list_ref (ref index) (ex-int))
-     (ref (var) (ex-int))
-     (atomic_bool_exp (bool) (ex-bool))
-     (atomic_num_exp (num) (ex-int))
-     (atomic_null_exp () (ex-none))
-     (atomic_list_exp (l) (ex-list))
-     ))
+  (cases expression expr
+    (binary_op (op left right) (ex-unknown))
+    (unary_op (op operand) (ex-unknown))
+    (function_call (func params) (proc->r_type (value-of func scope-index)))
+    (list_ref (ref index) (ex-int))
+    (ref (var) (ex-int))
+    (atomic_bool_exp (bool) (ex-bool))
+    (atomic_num_exp (num) (ex-int))
+    (atomic_null_exp () (ex-none))
+    (atomic_list_exp (l) (ex-list))
+    )
   )
 
 (define (func-param->eval-func-param -func_param scope-index)
@@ -151,9 +151,9 @@
   )
 
 (define (check-safe-type var t ex_t)
-  (if (not (eq? t ex_t))
-      (report-not-right-type var ex_t)
+  (if (or (equal? t (ex-unknown)) (equal? t ex_t))
       '()
+      (report-not-right-type var ex_t)
       )
   )
 
@@ -226,6 +226,6 @@
     )
   )
 
-(trace exec-stmts exec value-of)
+; (trace exec-stmts exec value-of type-of apply-assign check-safe-type)
 
 (provide (all-defined-out))
