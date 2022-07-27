@@ -11,8 +11,15 @@
   (new-proc
    (params eval-func-param*?)
    (statements list?)
+   (r_type is-type?)
    (parent-scope scope-index?)
    )
+  )
+
+(define (proc->r_type prc)
+  (cases proc prc
+    (new-proc (params sts r_type parent-scope) r_type)
+    )
   )
 
 (define-datatype eval-func-param eval-func-param?

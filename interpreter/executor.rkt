@@ -49,7 +49,7 @@
 
 (define (apply-func proc1 param-exprs scope-index)
   (cases proc proc1
-    (new-proc (params sts parent-scope)
+    (new-proc (params sts r_type parent-scope)
               (let ([func-scope (extend-params-scopes
                                  (new-scope (init-env) parent-scope (list))
                                  params param-exprs scope-index)])
@@ -92,9 +92,23 @@
     )
   )
 
+(define (type-of expr scope-index)
+  ((cases expression expr
+     (binary_op (op left right) (type-of left scope-index))
+     (unary_op (op operand) (type-of operand scope-index))
+     (function_call (func params) (proc->r_type (type-of func scope-index)))
+     (list_ref (ref index) (ex-int))
+     (ref (var) (ex-int))
+     (atomic_bool_exp (bool) (ex-bool))
+     (atomic_num_exp (num) (ex-int))
+     (atomic_null_exp () (ex-none))
+     (atomic_list_exp (l) (ex-list))
+     ))
+  )
+
 (define (func-param->eval-func-param -func_param scope-index)
   (cases func_param -func_param
-    (with_default (var expr) (eval_with_default var (value-of expr scope-index)))
+    (with_default (var expr) (eval_with_default (assignee-var->var var) (value-of expr scope-index)))
     )
   )
 
@@ -136,8 +150,21 @@
     )
   )
 
+(define (check-safe-type var t ex_t)
+  (if (not (eq? t ex_t))
+      (report-not-right-type var ex_t)
+      '()
+      )
+  )
+
 (define (apply-assign var val-expr scope-index)
-  (extend-scope-index scope-index var (not-eval-thunk val-expr scope-index))
+  (cases assignee-var var
+    (typed-var (var t) (begin
+                         (check-safe-type var (type-of val-expr scope-index) t)
+                         (extend-scope-index scope-index var (not-eval-thunk val-expr scope-index))
+                         ))
+    (untyped-var (var) (extend-scope-index scope-index var (not-eval-thunk val-expr scope-index)))
+    )
   )
 
 (define (apply-print vals)
@@ -154,15 +181,16 @@
     (pass () null)
     (break () (new-break))
     (continue () (new-continue))
-    (func (name params statements) (
-                                    let ([
-                                          prc (new-proc
-                                               (func_params->eval-func-params params scope-index)
-                                               statements
-                                               scope-index)
-                                              ])
-                                     (extend-scope-index scope-index name prc)
-                                     ))
+    (func (name params statements r_type) (
+                                           let ([
+                                                 prc (new-proc
+                                                      (func_params->eval-func-params params scope-index)
+                                                      statements
+                                                      r_type
+                                                      scope-index)
+                                                     ])
+                                            (extend-scope-index scope-index name prc)
+                                            ))
     (if_stmt (cond_exp if_sts else_sts) (apply-if
                                          (value-of cond_exp scope-index) if_sts else_sts scope-index
                                          stmt))
@@ -198,6 +226,6 @@
     )
   )
 
-; (trace exec-stmts exec value-of)
+(trace exec-stmts exec value-of)
 
 (provide (all-defined-out))

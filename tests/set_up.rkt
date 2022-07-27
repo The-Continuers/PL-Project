@@ -24,6 +24,7 @@
                                              (assign "x" (atomic_num_exp 4))
                                              (return (ref "g"))
                                              )
-                                        ROOT))
+                                       (ex-bool)
+                                       ROOT))
 (add-scope (new-scope (extend-env "y" 3 (init-env)) ROOT (list)))
 (add-scope (new-scope (extend-env "x" 12 (init-env)) 1 (list "y")))

@@ -6,21 +6,42 @@
   )
 
 (define-datatype statement statement?
-  (assign (var string?) (expr expression?))
+  (assign (var assignee-var?) (expr expression?))
   (global (var string?))
   (return (expr expression?))
   (return_void)
   (pass)
   (break)
   (continue)
-  (func (name string?) (params func_param*?) (statements list?))
+  (func (name string?) (params func_param*?) (statements list?) (r_type is-type?))
   (if_stmt (cond_exp expression?) (if_sts list?) (else_sts list?))
   (for_stmt (iter string?) (list_exp expression?) (sts list?))
   (print_stmt (expressions expression*?))
   )
 
+(define-datatype ex-type is-type?
+  (ex-int)
+  (ex-bool)
+  (ex-float)
+  (ex-list)
+  (ex-none)
+  (ex-unknown)
+  )
+
+(define-datatype assignee-var assignee-var?
+  (typed-var (var string?) (type is-type?))
+  (untyped-var (var string?))
+  )
+
+(define (assignee-var->var ass-var)
+  (cases assignee-var ass-var
+    (typed-var (var type) var)
+    (untyped-var (var) var)
+    )
+  )
+
 (define-datatype func_param func_param?
-  (with_default (var string?) (expr expression?))
+  (with_default (var assignee-var?) (expr expression?))
   )
 
 (define-datatype func_param* func_param*?

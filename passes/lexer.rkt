@@ -95,9 +95,9 @@
     (begin
       ; (display-lines (list prog-string))
       (lambda ()
-        ; (display-return
+        (display-return
         (python-lexer l)
-        ;  )
+         )
         ))))
 
 (provide (all-defined-out))

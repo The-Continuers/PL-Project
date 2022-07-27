@@ -9,7 +9,7 @@
   (cases statement st
     (break () (if is-for null (report-break-outside-loop sts)))
     (continue () (if is-for null (report-continue-outside-loop sts)))
-    (func (name params f_sts) (break_check_sts f_sts #f))
+    (func (name params f_sts r_type) (break_check_sts f_sts #f))
     (if_stmt (cond_exp if_sts else_sts)
              (begin
                (break_check_sts if_sts is-for)
