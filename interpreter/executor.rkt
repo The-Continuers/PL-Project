@@ -96,8 +96,8 @@
   (begin
     ; (display-lines (list iter_list))
     (cond
-      [(not (pair? iter_list)) (report-not-pair iter_list parent_stmt)]
       [(null? iter_list) null]
+      [(not (pair? iter_list)) (report-not-pair iter_list parent_stmt)]
       [else (begin
               (extend-scope-index scope-index iter (car iter_list))
               ;  (display-lines (list (get-scope-by-index scope-index)))

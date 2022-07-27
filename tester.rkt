@@ -1,7 +1,8 @@
 #lang racket
 
-(require "main.rkt")
+(require "evaluate.rkt")
 
-(define test-1 (string-join (file->lines "test_cases/T4 (General Test) - Students/in4.txt")))
+(define (evaluate-test i)
+  (evaluate (string-append "test_cases/T" (~a i) "/in" (~a i) ".txt"))
+  )
 
-(interpret test-1)
