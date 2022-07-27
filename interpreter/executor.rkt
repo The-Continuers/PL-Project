@@ -17,7 +17,22 @@
 
 (require "../utils.rkt")
 
-(define (extend-params-scopes -scope params param-values)
+(define (eval-apply-scope-index scope-index var)
+  (let ([thunk-val (apply-scope-index scope-index var)])
+    (if (pythunk? thunk-val)
+        (cases pythunk thunk-val
+          (not-eval-thunk (expr i)
+                          (let ([eval-expr (value-of expr i)])
+                            (begin (extend-scope-index scope-index var (eval-thunk eval-expr))
+                                   eval-expr
+                                   )))
+          (eval-thunk (val) val)
+          (else thunk-val)
+          )
+        thunk-val
+        )))
+
+(define (extend-params-scopes -scope params param-exprs scope-index)
   (cases eval-func-param* params
     (empty-eval-func-param () -scope)
     (eval-func-params (eval-param rest-evals)
@@ -25,18 +40,19 @@
                         (eval_with_default
                          (param-var param-val)
                          (extend-params-scopes
-                          (extend-scope -scope param-var (car param-values))
-                          rest-evals (cdr param-values)))
+                          (extend-scope -scope param-var
+                                        (not-eval-thunk (expression*->first param-exprs) scope-index))
+                          rest-evals (expression*->rest param-exprs) scope-index))
                         )
                       )
     ))
 
-(define (apply-func proc1 param-values scope-index)
+(define (apply-func proc1 param-exprs scope-index)
   (cases proc proc1
     (new-proc (params sts parent-scope)
               (let ([func-scope (extend-params-scopes
                                  (new-scope (init-env) parent-scope (list))
-                                 params param-values)])
+                                 params param-exprs scope-index)])
                 (exec-stmts sts (add-scope func-scope))))
     )
   )
@@ -61,14 +77,14 @@
     (unary_op (op operand) (op (value-of operand scope-index)))
     (function_call (func params)
                    (apply-func (value-of func scope-index)
-                               (expression*->list-val params scope-index)
+                               params
                                scope-index
                                ))
     (list_ref (ref index) (let ([ref-value (value-of ref scope-index)]
                                 [index-value (value-of index scope-index)])
                             (list-ref ref-value index-value)
                             ))
-    (ref (var) (apply-scope-index scope-index var))
+    (ref (var) (eval-apply-scope-index scope-index var))
     (atomic_bool_exp (bool) bool)
     (atomic_num_exp (num) num)
     (atomic_null_exp () null)
@@ -120,12 +136,8 @@
     )
   )
 
-(define (apply-assign var val scope-index)
-  (let ([assign-scope-index (if
-                             (is-global? var scope-index)
-                             ROOT
-                             scope-index)])
-    (extend-scope-index assign-scope-index var val))
+(define (apply-assign var val-expr scope-index)
+  (extend-scope-index scope-index var (not-eval-thunk val-expr scope-index))
   )
 
 (define (apply-print vals)
@@ -135,7 +147,7 @@
 
 (define (exec stmt scope-index)
   (cases statement stmt
-    (assign (var expr) (apply-assign var (value-of expr scope-index) scope-index))
+    (assign (var expr) (apply-assign var expr scope-index))
     (global (var) (let ([checked (check-global var scope-index)]) (extend-scope-index-globals scope-index var)))
     (return (expr) (value-of expr scope-index))
     (return_void () null)

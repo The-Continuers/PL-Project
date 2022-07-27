@@ -15,17 +15,17 @@
   (
    let ([my-scope (get-scope-by-index scope-index)])
     (
-     if (is-global? var scope-index) 
-     (apply-scope-index ROOT var)
-     (
-      let ([res (apply-env (scope->env my-scope) var)])
-       (cond
-         [(not (equal? res (new-env-not-found))) res]
-         [(>= (scope->parent-index my-scope) 0) (apply-scope-index (scope->parent-index my-scope) var)]
-         [else (report-not-found my-scope var)]
-         )
-      )
-     )
+     if (is-global? var scope-index)
+        (apply-scope-index ROOT var)
+        (
+         let ([res (apply-env (scope->env my-scope) var)])
+          (cond
+            [(not (equal? res (new-env-not-found))) res]
+            [(>= (scope->parent-index my-scope) 0) (apply-scope-index (scope->parent-index my-scope) var)]
+            [else (report-not-found my-scope var)]
+            )
+          )
+        )
     )
   )
 
@@ -40,10 +40,16 @@
                (scope->globals -scope))
     ))
 
+(define (find-var-scope scope-index var)
+  (if (is-global? var scope-index) ROOT scope-index)
+  )
+
 (define (extend-scope-index scope-index var val)
-  (set-scope scope-index
-             (extend-scope (get-scope-by-index scope-index) var val)
-             ))
+  (let ([var-scope-index (find-var-scope scope-index var)])
+    (set-scope var-scope-index
+               (extend-scope (get-scope-by-index var-scope-index) var val)
+               )
+    ))
 
 (define (extend-scope-globals -scope var)
   (new-scope (scope->env -scope) (scope->parent-index -scope)

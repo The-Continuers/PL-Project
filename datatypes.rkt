@@ -42,6 +42,20 @@
   (expressions (expr expression?) (rest-exprs expression*?))
   )
 
+(define (expression*->first exprs)
+  (cases expression* exprs
+    (expressions (expr rest-exprs) expr)
+    (else null)
+    )
+  )
+
+(define (expression*->rest exprs)
+  (cases expression* exprs
+    (expressions (expr rest-exprs) rest-exprs)
+    (else null)
+    )
+  )
+
 
 ;todo init_structure "Team"
 

@@ -3,6 +3,7 @@
 
 (require "../utils.rkt")
 (require "scope/mem.rkt")
+(require "../datatypes.rkt")
 
 
 ; for function definitions
@@ -26,6 +27,11 @@
 (define-datatype for-signal for-signal?
   (new-break)
   (new-continue)
+  )
+
+(define-datatype pythunk pythunk?
+  (not-eval-thunk (expr expression?) (i scope-index?))
+  (eval-thunk (val return-true))
   )
 
 (provide (all-defined-out))
