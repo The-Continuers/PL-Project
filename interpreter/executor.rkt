@@ -187,11 +187,13 @@
           ]
     ))
 
-(define (exec-program program)
+(define (exec-program prg)
   (begin
     (reset-scope)
     (add-scope (init-scope))
-    (exec-stmts program 0)
+    (cases program prg
+      (new-program (typed sts) (exec-stmts sts ROOT))
+      )
     (void)
     )
   )

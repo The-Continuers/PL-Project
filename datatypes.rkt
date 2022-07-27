@@ -1,6 +1,10 @@
 #lang racket
 (require (lib "eopl.ss" "eopl"))
 
+(define-datatype program program?
+  (new-program (typed boolean?) (sts list?))
+  )
+
 (define-datatype statement statement?
   (assign (var string?) (expr expression?))
   (global (var string?))

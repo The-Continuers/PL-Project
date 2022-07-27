@@ -28,10 +28,12 @@
         ))
   )
 
-(define (break_checker program)
+(define (break_checker prg)
   (begin
-    (break_check_sts program)
-    program
+    (cases program prg
+      (new-program (typed sts) (break_check_sts sts))
+      )
+    prg
     )
   )
 

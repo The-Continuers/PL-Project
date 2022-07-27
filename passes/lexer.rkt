@@ -14,6 +14,8 @@
 (define-empty-tokens COND_OPS (ISEQ LT BT))
 (define-empty-tokens ARITH_OPS (PLUS MINUS MULTI DIV POW))
 (define-empty-tokens INDEX_OPS (LBRACK RBRACK BRACK))
+(define-empty-tokens TYPE_KWS (INT FLOAT BOOL LIST CHECKED))
+(define-empty-tokens TYPE_OPS (ARROW))
 (define-empty-tokens END (EOF))
 
 (define python-lexer
@@ -63,6 +65,13 @@
    ("[]" (token-BRACK))
    ("[" (token-LBRACK))
    ("]" (token-RBRACK))
+   ;type
+   ("int" (token-INT))
+   ("float" (token-FLOAT))
+   ("bool" (token-BOOL))
+   ("list" (token-LIST))
+   ("checked" (token-CHECKED))
+   ("->" (token-ARROW))
    (
     (:or (:+ (char-range #\0 #\9))
          (:: (:+ (char-range #\0 #\9)) #\. (:+ (char-range #\0 #\9))))
